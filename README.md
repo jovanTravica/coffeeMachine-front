@@ -20,5 +20,13 @@ npm run build
 npm run lint
 ```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### Setup variables are created at .env.local
+
+Example content:
+
+```bash
+VUE_APP_TITLE=Coffee Machiner (LOCAL)
+VUE_APP_SERVER_URL='http://localhost:9090'
+PORT=8080
+
+```
