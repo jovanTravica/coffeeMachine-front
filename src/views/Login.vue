@@ -23,7 +23,7 @@
 
 
 <script lang="ts">
-import serverUrl from '../localconfig';
+import config from '../config';
 import { Component,  Vue } from 'vue-property-decorator';
 import axios from 'axios';
 import router from '../router';
@@ -37,7 +37,9 @@ export default class Login extends Vue {
 private response = 0
  public doRegister() {
 
-axios.post(`${serverUrl}/api/login`, {
+      console.log(config)
+
+axios.post(`${config.serverURL}/api/login`, {
     username: this.username
     , password: this.password
 }).then(resp=> {router.push("/home")})
