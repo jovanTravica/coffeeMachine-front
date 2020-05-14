@@ -15,7 +15,7 @@
       <td class="text-xs-right">{{ row.item.name }}</td>
       <td class="text-xs-right">{{ row.item.year }}</td>
       <td class="text-xs-right">{{ row.item.descr }}</td>
-      <td class="text-xs-right"> <router-link to="/edit" class="btn btn-primary" tag="button" value="buttons"> Edit </router-link>  <router-link to="/delete" class="btn btn-danger" tag="button" value="buttons"> Delete </router-link> </td>
+      <td class="text-xs-right"> <router-link to="/modelsedit" class="btn btn-primary" tag="button"  v-on:click.native="Edit(row.item)" value="buttons"> Edit </router-link> <button type="button" class="btn btn-danger" v-on:click="DeleteModel(row.item.id)">Delete</button> </td>
 </tr>
     </template>
 
@@ -25,16 +25,19 @@
   </div>
 </template>
 
+
 <script lang="ts">
 import config from "../config";
-import Navbar from "@/components/Navbar"
+import Navbar from "@/components/Navbar.vue"
 import { Component, Vue } from "vue-property-decorator";
 import axios from "axios";
+import router from "../router";
 
 export default {
   components: { Navbar },
 data(){
   return {
+    
     headers: [
           {
             text: 'Code',
@@ -59,7 +62,33 @@ axios.get(`${config.serverURL}/api/v1/models`, {headers: {
 	},}).
 
 then(response => { 
-this.models = response.data; console.log(this.models);   }) 
+this.models = response.data; }) 
+
+
+},
+
+methods: {
+DeleteModel(id:number){
+
+if(confirm("Do you really want to delete?")){
+
+                axios.delete(`${config.serverURL}/api/v1/models/`+id)
+                .then(resp => {
+                   alert ('Model deleted');
+                   this.$router.go(0);
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+   }
+}
+,
+
+Edit(model:{} ){
+
+  this.$store.commit('edit', model);
+
+}
 
 
 }

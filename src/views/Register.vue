@@ -1,5 +1,6 @@
 <template>
   <div id="app" class="container">
+     <div id="inner"  class="col-sm-6 col-md-3 col-md-offset-4">
     <img
       width="250"
       height="250"
@@ -7,6 +8,7 @@
       alt="Responsive image"
       src="@/assets/logo.png"
     />
+     </div>
     <div class="">
       <div id="inner" class="col-sm-6 col-md-4 col-md-offset-4">
         <div class="account-wall">
@@ -68,7 +70,7 @@ import axios from "axios";
 import router from "../router";
 
 @Component
-export default class Login extends Vue {
+export default class Register extends Vue {
   private name = "";
   private desc = "";
   private password = "";

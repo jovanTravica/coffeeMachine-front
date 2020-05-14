@@ -54,7 +54,7 @@ export default class Login extends Vue {
 
   private response = 0;
   public doRegister() {
-    console.log(config);
+   
 
     axios
       .post(`${config.serverURL}/api/login`, {
