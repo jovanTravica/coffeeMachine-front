@@ -1,6 +1,6 @@
 <template>
   <div>
-      <Navbar/>
+      <Navbar/> <br>
 
 
 
@@ -12,16 +12,61 @@
         <template slot="item" slot-scope="row">
 <tr>
       <td class="text-xs-right">{{ row.item.code }}</td>
-      <td class="text-xs-right">{{ row.item.name }}</td>
-      <td class="text-xs-right">{{ row.item.year }}</td>
-      <td class="text-xs-right">{{ row.item.descr }}</td>
-      <td class="text-xs-right"> <router-link to="/modelsedit" class="btn btn-primary" tag="button"  v-on:click.native="Edit(row.item)" value="buttons"> Edit </router-link> <button type="button" class="btn btn-danger" v-on:click="DeleteModel(row.item.id)">Delete</button> </td>
+
+      <td class="text-xs-right">
+        <v-edit-dialog
+          :return-value.sync="row.item.name"
+          large
+      persistent>
+          {{ row.item.name }}
+          <template v-slot:input>
+           <v-text-field
+          v-model="row.item.name" ></v-text-field>
+          </template>
+            </v-edit-dialog>
+             </td>
+
+
+      <td class="text-xs-right">
+       <v-edit-dialog
+          :return-value.sync="row.item.year"
+          large
+      persistent>
+         {{ row.item.year }}
+          <template v-slot:input>
+             <v-text-field
+            v-model="row.item.year"
+            label="Date"
+            prepend-icon="event"
+            readonly
+            v-on="on"
+          ></v-text-field>
+           <v-date-picker
+          v-model="row.item.year" ></v-date-picker>
+          </template>
+            </v-edit-dialog>
+           </td>
+
+      <td class="text-xs-right">
+        <v-edit-dialog
+          :return-value.sync="row.item.descr"
+          large
+      persistent>
+          {{ row.item.descr }}
+          <template v-slot:input>
+           <v-text-field
+          v-model="row.item.descr" ></v-text-field>
+          </template>
+            </v-edit-dialog></td>
+            
+      <td class="text-xs-right"> <router-link to="/modelsedit" class="btn btn-primary" tag="button"  v-on:click.native="Edit(row.item)" value="buttons"> Edit </router-link> <button type="button" class="btn btn-danger" v-on:click="DeleteModel(row.item.id)">Delete</button> <button type="button" class="btn btn-danger" v-on:click="EditModel(row.item.code, row.item.name,row.item.year,row.item.descr)">Save</button> </td>
 </tr>
     </template>
 
       </v-data-table>
-
-
+      <div id="inner" class="col-sm-6 col-md-2 col-md-offset-4">
+<router-link to="/modelscreate" class="btn btn-dark" tag="button"> Create new </router-link>
+      </div>
   </div>
 </template>
 
@@ -38,6 +83,7 @@ export default {
 data(){
   return {
     
+
     headers: [
           {
             text: 'Code',
@@ -86,8 +132,27 @@ if(confirm("Do you really want to delete?")){
 
 Edit(model:{} ){
 
-  this.$store.commit('edit', model);
+  this.$store.commit('editModel', model);
 
+},
+
+EditModel(code:number, name:string, year:Date, descr:string){
+
+  axios
+      .post(`${config.serverURL}/api/v1/models`, {
+        code: code,
+        name: name,
+        year: year,
+        descr: descr
+      })
+      .then(resp => {
+        alert("Data saved");
+        this.$router.go(0);
+        
+      })
+      .catch(function(error) {
+        alert(error.response.data.message);
+      });
 }
 
 
@@ -98,7 +163,9 @@ Edit(model:{} ){
 
 </script>
 
-<style>
+<style scoped>
 
-
+#inner {
+  margin: 0 auto;
+}
 </style>

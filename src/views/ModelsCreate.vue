@@ -1,8 +1,9 @@
 <template>
 <div>
 <Navbar/> <br>
+
 <div id= "inner" class="col-sm-6 col-md-3">
-  <form  @submit.prevent="Edit" method="POST">
+  <form  @submit.prevent="Create" method="POST">
 <div class="account-wall">
     <v-col id="inner" cols="12" sm="6" md="8">
         
@@ -11,7 +12,7 @@
             outlined
             dense
             id="code"
-             v-model="code"
+          @input="code = $event"
           > </v-text-field>
         </v-col>
 
@@ -45,7 +46,8 @@
         </template>
         <v-date-picker v-model="year" @input="menu = false"></v-date-picker>
       </v-menu>
-        </v-col>
+    </v-col>
+    <v-spacer></v-spacer>
 
         <v-col id="inner" cols="12" sm="6" md="8">
           <v-text-field 
@@ -59,7 +61,7 @@
         </v-col>
         
  <button class="btn btn-lg btn-primary btn-block" type="submit">
-              Save 
+              Create
             </button> 
            
             
@@ -83,15 +85,15 @@ import { Component, Vue } from "vue-property-decorator";
     Navbar
   }
 })
-export default class ModelsEdit extends Vue {
- private menu = false
- private code = 0
+export default class ModelsCreate extends Vue {
+ private menu = null
+ private code= 0
  private name = ""
- private year = Date
+ private year = null
  private descr = ""
   
 
-  Edit() {
+  Create() {
 
     axios
       .post(`${config.serverURL}/api/v1/models`, {
@@ -105,29 +107,14 @@ export default class ModelsEdit extends Vue {
       })
       .catch(function(error) {
         alert(error.response.data.message);
-      });
-                                              
-     this.$store.getters.model.code = this.code
-     this.$store.getters.model.name = this.name
-     this.$store.getters.model.year = this.year
-     this.$store.getters.model.descr = this.descr
-  }
-
-  created() {
-  this.code = this.$store.getters.model.code
-  this.name = this.$store.getters.model.name
-  this.year = this.$store.getters.model.year
-  this.descr = this.$store.getters.model.descr
-}
-}
+      })}
+      
+      }
 
 
+      </script>
 
-
-    
-
-</script>
-
+      
 <style scoped>
 .account-wall {
   margin-top: 20px;

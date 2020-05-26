@@ -5,18 +5,24 @@ Vue.use(Vuex)
 
 export const store = new Vuex.Store({
 state: {
-  model: 0 
+  model: {},
+  location: {}
 
 },
 mutations: {
-    edit (state, model ){
+    editModel (state, model ){
        state.model = model;
     },
+
+    editLocation (state, location ){
+      state.location = location;
+   }
 
 },
 
 getters: {
-    model: state => state.model
+    model: state => state.model,
+    location: state => state.location
 }
 
 })

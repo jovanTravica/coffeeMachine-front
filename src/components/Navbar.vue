@@ -1,6 +1,6 @@
 <template>
   <nav>
-    <v-toolbar flat app>
+    <v-toolbar flat >
       <v-icon
         @click="drawer = !drawer"
         class="grey--text"
@@ -10,10 +10,10 @@
         <span>Machines</span>
       </v-toolbar-title>
       <v-spacer></v-spacer>
-      <v-btn flat color="grey">
-        <router-link to="/">Sign Out</router-link>
-        <v-icon right>exit_to_app</v-icon>
-      </v-btn>
+      
+        <router-link class="btn btn-secondary" to="/" tag="button">Sign Out
+        <v-icon right>exit_to_app</v-icon></router-link>
+    
     </v-toolbar>
 
     <v-navigation-drawer app v-model="drawer" class="secondary" width="200" >

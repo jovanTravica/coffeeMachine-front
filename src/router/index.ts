@@ -30,6 +30,11 @@ const routes = [
     component: () => import(/* webpackChunkName: "models" */ "../views/Models.vue")
   },
   {
+    path: "/modelscreate",
+    name: "ModelsCreate",
+    component: () => import(/* webpackChunkName: "modelscreate" */ "../views/ModelsCreate.vue")
+  },
+  {
     path: "/modelsedit",
     name: "ModelsEdit",
     component: () => import(/* webpackChunkName: "modelsedit" */ "../views/ModelsEdit.vue")
@@ -38,6 +43,16 @@ const routes = [
     path: "/locations",
     name: "Locations",
     component: () => import(/* webpackChunkName: "locations" */ "../views/Locations.vue")
+  },
+  {
+    path: "/locationscreate",
+    name: "LocationsCreate",
+    component: () => import(/* webpackChunkName: "locationscreate" */ "../views/LocationsCreate.vue")
+  },
+  {
+    path: "/locationsedit",
+    name: "LocationsEdit",
+    component: () => import(/* webpackChunkName: "locationsedit" */ "../views/LocationsEdit.vue")
   }
 ];
 
