@@ -63,6 +63,7 @@ export default class Login extends Vue {
       })
       .then(resp => {
         router.push("/home");
+        this.$store.commit("login", resp.status) 
       })
       .catch(function(error) {
         alert(error.response.data.message);

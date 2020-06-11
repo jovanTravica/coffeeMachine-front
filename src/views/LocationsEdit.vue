@@ -1,7 +1,7 @@
 <template>
 <div>
 <Navbar/> 
-<div id= "inner" class="col-sm-6 col-md-3">
+<div id= "inner" class=" col-md-3">
   <form  @submit.prevent="Edit" method="POST">
 <div class="account-wall">
     <v-col id="inner" cols="12" sm="6" md="8">

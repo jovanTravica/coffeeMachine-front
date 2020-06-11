@@ -1,6 +1,7 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Login from "../views/Login.vue";
+import { store } from '@/store/store';
 
 Vue.use(VueRouter);
 
@@ -52,7 +53,9 @@ const routes = [
   {
     path: "/locationsedit",
     name: "LocationsEdit",
-    component: () => import(/* webpackChunkName: "locationsedit" */ "../views/LocationsEdit.vue")
+    component: () => import(/* webpackChunkName: "locationsedit" */ "../views/LocationsEdit.vue"),
+    meta: {requiresAuth: true}
+    
   }
 ];
 
@@ -60,4 +63,14 @@ const router = new VueRouter({
   routes
 });
 
+router.beforeEach((to, from, next) => {
+  if(to.matched.some(record =>to.meta.requiresAuth)){
+
+    if(store.getters.status == 200)
+    next()
+
+    else next({name: "Login"})
+  }
+ else next()
+})
 export default router;

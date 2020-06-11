@@ -11,7 +11,7 @@
       </v-toolbar-title>
       <v-spacer></v-spacer>
       
-        <router-link class="btn btn-secondary" to="/" tag="button">Sign Out
+        <router-link class="btn btn-secondary" to="/" tag="button" v-on:click.native = Logout()>Sign Out
         <v-icon right>exit_to_app</v-icon></router-link>
     
     </v-toolbar>
@@ -44,6 +44,11 @@ export default {
         
       ]
     };
+  },
+  methods: {
+    Logout(){
+      this.$store.commit('login', 0) ;
+    }
   }
 };
 </script>

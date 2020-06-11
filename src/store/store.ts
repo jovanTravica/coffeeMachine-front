@@ -6,7 +6,8 @@ Vue.use(Vuex)
 export const store = new Vuex.Store({
 state: {
   model: {},
-  location: {}
+  location: {},
+  status: 0
 
 },
 mutations: {
@@ -16,13 +17,19 @@ mutations: {
 
     editLocation (state, location ){
       state.location = location;
+   },
+
+   login(state, status){
+      state.status = status;
    }
 
 },
 
 getters: {
     model: state => state.model,
-    location: state => state.location
-}
+    location: state => state.location,
+    status: state => state.status
+},
+
 
 })
