@@ -7,7 +7,9 @@ export const store = new Vuex.Store({
 state: {
   model: {},
   location: {},
-  status: 0
+  document: {},
+  status: 0,
+  documentType: ''
 
 },
 mutations: {
@@ -18,9 +20,16 @@ mutations: {
     editLocation (state, location ){
       state.location = location;
    },
+   editDocument (state, document ){
+      state.document = document;
+   },
 
    login(state, status){
       state.status = status;
+   },
+
+   docType(state, documentType) {
+     state.documentType = documentType;
    }
 
 },
@@ -28,7 +37,9 @@ mutations: {
 getters: {
     model: state => state.model,
     location: state => state.location,
-    status: state => state.status
+    document: state => state.document,
+    status: state => state.status,
+    documentType: state => state.documentType
 },
 
 

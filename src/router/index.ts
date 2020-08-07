@@ -56,7 +56,25 @@ const routes = [
     component: () => import(/* webpackChunkName: "locationsedit" */ "../views/LocationsEdit.vue"),
     meta: {requiresAuth: true}
     
+  },
+  {
+    path: "/documents/:name",
+    name: "Documents",
+    component: () => import(/* webpackChunkName: "documents" */ "../views/Documents.vue")
+  },
+
+  {
+    path: "/documentscreate",
+    name: "DocumentsCreate",
+    component: () => import(/* webpackChunkName: "documentscreate" */ "../views/DocumentsCreate.vue")
+  },
+
+  {
+    path: "/documentsitemcreate",
+    name: "DocumentsItemCreate",
+    component: () => import(/* webpackChunkName: "documentsitemcreate" */ "../views/DocumentsItemCreate.vue")
   }
+  
 ];
 
 const router = new VueRouter({
