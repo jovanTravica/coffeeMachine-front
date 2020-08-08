@@ -70,6 +70,12 @@ const routes = [
   },
 
   {
+    path: "/documentsedit",
+    name: "DocumentsEdit",
+    component: () => import(/* webpackChunkName: "documentsedit" */ "../views/DocumentsEdit.vue")
+  },
+
+  {
     path: "/documentsitemcreate",
     name: "DocumentsItemCreate",
     component: () => import(/* webpackChunkName: "documentsitemcreate" */ "../views/DocumentsItemCreate.vue")
