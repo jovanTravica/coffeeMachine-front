@@ -21,6 +21,7 @@
               placeholder="Username"
               required
               autofocus
+              autocomplete="off"
             />
             <input
               id="password"
@@ -35,7 +36,6 @@
             </button>
           </form>
         </div>
-        <router-link to="/register">Create an account </router-link>
       </div>
     </div>
   </div>

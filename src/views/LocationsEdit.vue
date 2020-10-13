@@ -1,5 +1,6 @@
 <template>
 <div>
+  <div  id="bg" v-bind:style="{ backgroundImage: 'url(' + require('../assets/kafa.jpg') + ')' }">
 <Navbar/> 
 <div id= "inner" class=" col-md-3">
   <form  @submit.prevent="Edit" method="POST">
@@ -12,6 +13,7 @@
             dense
             id="code"
              v-model="code"
+          readonly
           > </v-text-field>
         </v-col>
 
@@ -22,6 +24,7 @@
             dense
             id="name"
            v-model="name"
+           required
           ></v-text-field>
         </v-col>
 
@@ -44,6 +47,7 @@
             dense
           id="adress"
           v-model="adress"
+          required
           ></v-text-field>
         </v-col>
         
@@ -107,13 +111,15 @@
  <button class="btn btn-lg btn-primary btn-block" type="submit">
               Save 
             </button> 
-           
+           <button class="btn btn-lg btn-secondary btn-block" v-on:click="back()">
+              Cancel
+              </button>  
             
 </div>
   </form>
 </div>
 </div>
-
+</div>
 </template>
 
 <script lang="ts">
@@ -146,7 +152,7 @@ alert("'Date from' has to be lower  than 'date to'")
 
 else {
     axios
-      .post(`${config.serverURL}/api/v1/locations`, {
+      .put(`${config.serverURL}/api/v1/locations`, {
         code: this.code,
         name: this.name,
         descr: this.descr,
@@ -156,6 +162,7 @@ else {
         active: this.options()
       })
       .then(resp => {
+        alert("Edited");
         router.push("/locations");
       })
       .catch(function(error) {
@@ -184,6 +191,9 @@ else {
   else
   this.selectedItem = 'not active'
 }
+back() {
+  this.$router.go(-1);
+}
 
 options(){
     if (this.selectedItem == 'active')
@@ -211,4 +221,14 @@ options(){
   #inner {
   margin: 0 auto;
 }
+
+
+  div#bg {
+  -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    background-repeat: no-repeat;
+  
+  }
 </style>

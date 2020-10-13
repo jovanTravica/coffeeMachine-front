@@ -3,7 +3,7 @@
     <div  id="bg" v-bind:style="{ backgroundImage: 'url(' + require('../assets/kafa.jpg') + ')' }">
       <Navbar/> <br>
 
-<v-text-field
+    <v-text-field
         v-model="search"
         append-icon="mdi-magnify"
         label="Search"
@@ -11,16 +11,16 @@
         hide-details
         class="col-sm-6 col-md-3"
       ></v-text-field>
-      <br>
-
-      <v-data-table :items="models"
+<br>
+      <v-data-table :items="assets"
                     :headers="headers"
                     :search="search"
+                    
     class="transparent"
   >
                     
         <template slot="item" slot-scope="row">
-<tr>
+<tr  v-on:click="showDays(row.item.id); show=true">
       <td class="text-xs-right">{{ row.item.code }}</td>
 
       <td class="text-xs-right">
@@ -38,26 +38,6 @@
 
 
       <td class="text-xs-right">
-       <v-edit-dialog
-          :return-value.sync="row.item.year"
-          large
-      persistent>
-         {{ row.item.year }}
-          <template v-slot:input>
-             <v-text-field
-            v-model="row.item.year"
-            label="Date"
-            prepend-icon="event"
-            readonly
-            v-on="on"
-          ></v-text-field>
-           <v-date-picker
-          v-model="row.item.year" ></v-date-picker>
-          </template>
-            </v-edit-dialog>
-           </td>
-
-      <td class="text-xs-right">
         <v-edit-dialog
           :return-value.sync="row.item.descr"
           large
@@ -68,15 +48,50 @@
           v-model="row.item.descr" ></v-text-field>
           </template>
             </v-edit-dialog></td>
+
+
+             <td class="text-xs-right">
+        <v-edit-dialog
+          :return-value.sync="row.item.model.name"
+          large
+      persistent>
+          {{ row.item.model.name }}
+          <template v-slot:input>
+           <v-text-field
+          v-model="row.item.model.name" ></v-text-field>
+          </template>
+            </v-edit-dialog>
+             </td>
+
+              <td class="text-xs-right">
+        <v-edit-dialog
+          :return-value.sync="row.item.location.name"
+          large
+      persistent>
+          {{ row.item.location.name }}
+          <template v-slot:input>
+           <v-text-field
+          v-model="row.item.location.name" ></v-text-field>
+          </template>
+            </v-edit-dialog>
+             </td>
             
-      <td class="text-xs-right"> <router-link to="/modelsedit" class="btn btn-primary" tag="button"  v-on:click.native="Edit(row.item)" value="buttons"> Edit </router-link> <button type="button" class="btn btn-danger" v-on:click="DeleteModel(row.item.id)">Delete</button> <button type="button" class="btn btn-danger" v-on:click="EditModel(row.item.code, row.item.name,row.item.year,row.item.descr)">Save</button> </td>
+      <td class="text-xs-right"> <router-link to="/assetsedit" class="btn btn-primary" tag="button"  v-on:click.native="Edit(row.item)" value="buttons"> Edit </router-link> <button type="button" class="btn btn-danger" v-on:click="DeleteAsset(row.item.id)">Delete</button> <button type="button" class="btn btn-danger" v-on:click="EditAsset(row.item.code, row.item.name,row.item.descr)">Save</button> </td>
 </tr>
     </template>
 
       </v-data-table>
       <div id="inner" class="col-sm-6 col-md-2 col-md-offset-4">
-<router-link to="/modelscreate" class="btn btn-dark" tag="button"> Create new </router-link>
+<router-link to="/assetscreate" class="btn btn-dark" tag="button"> Create new </router-link>
       </div>
+
+      <div v-for="stanje in stanje " :key="stanje.id" v-show="show">
+        <div v-if="stanje.dani === null">
+          There is no data for this asset</div>
+          <div v-else>
+  Next refill should be in {{stanje.dani}} days
+          </div>
+</div>
   </div>
   </div>
 </template>
@@ -103,36 +118,39 @@ data(){
             value: 'code',
           },
           { text: 'Name', value: 'name' },
-          { text: 'Year', value: 'year' },
           { text: 'Description', value: 'descr' },
+           { text: 'Model', value: 'model' },
+            { text: 'Location', value: 'location' },
           {text: 'Actions', value:'buttons'}
     
         ],
-    models : [],
+    assets : [],
+    stanje : [],
+    show: false,
     search: ''
     
   }
 },
 
 created(){
-axios.get(`${config.serverURL}/api/v1/models`, {headers: {
+axios.get(`${config.serverURL}/api/v1/assets`, {headers: {
 	  'Access-Control-Allow-Origin': '*',
 	},}).
 
 then(response => { 
-this.models = response.data; }) 
+this.assets = response.data; }) 
 
 
 },
 
 methods: {
-DeleteModel(id:number){
+DeleteAsset(id:number){
 
 if(confirm("Do you really want to delete?")){
 
-                axios.delete(`${config.serverURL}/api/v1/models/`+id)
+                axios.delete(`${config.serverURL}/api/v1/assets/`+id)
                 .then(resp => {
-                   alert ('Model deleted');
+                   alert ('Asset deleted');
                    this.$router.go(0);
                 })
                 .catch(error => {
@@ -142,19 +160,18 @@ if(confirm("Do you really want to delete?")){
 }
 ,
 
-Edit(model:{} ){
+Edit(asset:{} ){
 
-  this.$store.commit('editModel', model);
+  this.$store.commit('editAsset', asset);
 
 },
 
-EditModel(code:number, name:string, year:Date, descr:string){
+EditModel(code:number, name:string, descr:string){
 
   axios
-      .put(`${config.serverURL}/api/v1/models`, {
+      .post(`${config.serverURL}/api/v1/models`, {
         code: code,
         name: name,
-        year: year,
         descr: descr
       })
       .then(resp => {
@@ -165,7 +182,17 @@ EditModel(code:number, name:string, year:Date, descr:string){
       .catch(function(error) {
         alert(error.response.data.message);
       });
-}
+},
+
+showDays (assetId: number){
+const show = true;
+axios.get(`${config.serverURL}/api/v1/stanje/asset/` + assetId
+).
+
+then(response => { 
+this.stanje = response.data; }) 
+
+ }
 
 
 }
@@ -190,4 +217,5 @@ EditModel(code:number, name:string, year:Date, descr:string){
     background-repeat: no-repeat;
     height: 100vh;
   }
+
 </style>

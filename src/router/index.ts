@@ -79,8 +79,29 @@ const routes = [
     path: "/documentsitemcreate",
     name: "DocumentsItemCreate",
     component: () => import(/* webpackChunkName: "documentsitemcreate" */ "../views/DocumentsItemCreate.vue")
-  }
+  },
+  {
+    path: "/assets",
+    name: "Asset",
+    component: () => import(/* webpackChunkName: "assets" */ "../views/Asset.vue")
+  },
+  {
+    path: "/assetsedit",
+    name: "AssetsEdit",
+    component: () => import(/* webpackChunkName: "documentsedit" */ "../views/AssetEdit.vue")
+  },
+
+  {
+    path: "/assetscreate",
+    name: "AssetsCreate",
+    component: () => import(/* webpackChunkName: "documentsitemcreate" */ "../views/AssetCreate.vue")
+  },
   
+  {
+    path: "/dijagram",
+    name: "DijagramPrikaz",
+    component: () => import(/* webpackChunkName: "dijagramprikaz" */ "../views/DijagramPrikaz.vue")
+  },
 ];
 
 const router = new VueRouter({

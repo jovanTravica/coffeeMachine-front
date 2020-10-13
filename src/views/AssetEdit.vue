@@ -1,9 +1,10 @@
 <template>
 <div>
   <div  id="bg" v-bind:style="{ backgroundImage: 'url(' + require('../assets/kafa.jpg') + ')' }">
-<Navbar/> 
+<Navbar/> <br>
+
 <div id= "inner" class="col-sm-6 col-md-3">
-  <form  @submit.prevent="Edit" method="PUT">
+  <form  @submit.prevent="Edit" method="POST">
 <div class="account-wall">
     <v-col id="inner" cols="12" sm="6" md="8">
         
@@ -12,8 +13,8 @@
             outlined
             dense
             id="code"
-             v-model="code"
-             readonly
+          v-model="code"
+          readonly
           > </v-text-field>
         </v-col>
 
@@ -37,44 +38,20 @@
            id="descr"
          v-model="descr"
      ></v-text-field>
+          
         </v-col>
 
 
-      <v-col  id="inner" cols="12" sm="6" md="8" >
-          <v-menu
-        v-model="menu0"
-        :close-on-content-click="false"
-        :nudge-right="40"
-        transition="scale-transition"
-        offset-y
-        min-width="290px"
-      >
-        <template v-slot:activator="{ on }">
-          <v-text-field
-            v-model="dateDoc"
-            label="Date "
-            prepend-icon="event"
-            readonly
-            v-on="on"
-          ></v-text-field>
-        </template>
-        <v-date-picker v-model="dateDoc" @input="menu0 = false"></v-date-picker>
-      </v-menu>
-    </v-col>
-    <v-spacer></v-spacer>
-          
-
-
-  <v-row align="center">
+        <v-row align="center">
     <v-col  id="inner" cols="12" sm="6" md="8" >
       <v-select
-      :items="documentTypeArray"
+      :items="modelArray"
       item-text="name"
       item-value= "code"
        return-object
         :menu-props="{ top: true, offsetY: true }"
-        label="Document type"
-        v-model="documentTypeItem"
+        label="Model"
+        v-model="modelItem"
       ></v-select>
     </v-col>
   </v-row>
@@ -83,33 +60,34 @@
   <v-row align="center">
     <v-col  id="inner" cols="12" sm="6" md="8" >
       <v-select
-      :items="assetArray"
+      :items="locationArray"
       item-text="name"
       item-value= "code"
        return-object
         :menu-props="{ top: true, offsetY: true }"
-        label="Asset"
-        v-model="assetItem"
+        label="Location"
+        v-model="locationItem"
       ></v-select>
     </v-col>
   </v-row>
-
-
-
+        
  <button class="btn btn-lg btn-primary btn-block" type="submit">
-              Save 
+              Save
             </button> 
-            <button class="btn btn-lg btn-secondary btn-block" v-on:click="back()">
+            
+              <button class="btn btn-lg btn-secondary btn-block" v-on:click="back()">
               Cancel
-              </button>  
+              </button> 
            
             
 </div>
   </form>
+   
 </div>
 </div>
 </div>
 </template>
+
 
 <script lang="ts">
 import Navbar from "@/components/Navbar.vue";
@@ -123,48 +101,44 @@ import { Component, Vue } from "vue-property-decorator";
     Navbar
   }
 })
-export default class DocumentsEdit extends Vue {
+export default class AssetEdit extends Vue {
   
-  private menu0 = false
-  private menu = false
-  private menu1 = false
+
  private code = 0
  private name = ""
  private descr = ""
-  private dateDoc = new Date().toISOString().substr(0, 10)
+ 
 
 
-  private document = []
-private documentTypeArray = []
-private assetArray = []
-   private storageItem ={}
-   private documentTypeItem = {}
-    private assetItem = {}
+private modelArray = []
+private locationArray = []
+   private modelItem ={}
+   private locationItem = {}
+
 
      created() {
 
-  this.code = this.$store.getters.document.code
-  this.name = this.$store.getters.document.name
-  this.descr = this.$store.getters.document.descr
-  this.dateDoc = this.$store.getters.document.dateDoc
-  this.documentTypeItem = this.$store.getters.document.documentType
-  this.assetItem = this.$store.getters.document.asset
+  this.code = this.$store.getters.asset.code
+  this.name = this.$store.getters.asset.name
+  this.descr = this.$store.getters.asset.descr
+  this.modelItem = this.$store.getters.asset.model
+  this.locationItem = this.$store.getters.asset.location
 
 
- axios.get(`${config.serverURL}/api/v1/documenttype`, {headers: {
+ axios.get(`${config.serverURL}/api/v1/models`, {headers: {
 	  'Access-Control-Allow-Origin': '*',
 	},}).
 
 then(response => { 
-this.documentTypeArray= response.data;
+this.modelArray= response.data;
 
 
-axios.get(`${config.serverURL}/api/v1/assets`, {headers: {
+axios.get(`${config.serverURL}/api/v1/locations`, {headers: {
 	  'Access-Control-Allow-Origin': '*',
 	},}).
 
 then(response => { 
-this.assetArray= response.data;
+this.locationArray= response.data;
 
 })
 }) 
@@ -175,17 +149,13 @@ this.assetArray= response.data;
 
 Edit() {
 
-if(Object.keys(this.assetItem).length === 0 || Object.keys(this.documentTypeItem).length === 0 )
-  alert("Asset and document type are required fields")
-  
     axios
-      .put(`${config.serverURL}/api/v1/document`, {
+      .put(`${config.serverURL}/api/v1/assets`, {
         code: this.code,
         name: this.name,
         descr: this.descr,
-        dateDoc: this.dateDoc,
-        documentType: this.documentTypeItem,
-        asset: this.assetItem
+        model: this.modelItem,
+        location: this.locationItem
       })
       .then(resp => {
         alert("Edited");
@@ -195,18 +165,13 @@ if(Object.keys(this.assetItem).length === 0 || Object.keys(this.documentTypeItem
         alert(error.response.data.message);
       });
                                               
-     this.$store.getters.document.code = this.code
-     this.$store.getters.document.name = this.name
-     this.$store.getters.document.descr = this.descr
-     this.$store.getters.document.dateDoc = this.dateDoc
-      this.$store.getters.document.documentType = this.documentTypeItem
-       this.$store.getters.document.asset = this.assetItem
+     this.$store.getters.asset.code = this.code
+     this.$store.getters.asset.name = this.name
+     this.$store.getters.asset.descr = this.descr
+      this.$store.getters.asset.model = this.modelItem
+       this.$store.getters.asset.location = this.locationItem
   }
 
-
-back() {
-  this.$router.go(-1);
-}
 
 
 
@@ -228,13 +193,12 @@ back() {
   margin: 0 auto;
 }
 
-
   div#bg {
   -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
     background-repeat: no-repeat;
-  
+    height: 100vh;
   }
 </style>

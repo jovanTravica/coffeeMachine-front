@@ -8,6 +8,7 @@ state: {
   model: {},
   location: {},
   document: {},
+  asset:{},
   status: 0,
   documentType: ''
 
@@ -22,6 +23,10 @@ mutations: {
    },
    editDocument (state, document ){
       state.document = document;
+   },
+
+   editAsset (state, asset ){
+      state.asset = asset;
    },
 
    login(state, status){
@@ -39,7 +44,8 @@ getters: {
     location: state => state.location,
     document: state => state.document,
     status: state => state.status,
-    documentType: state => state.documentType
+    documentType: state => state.documentType,
+    asset: state => state.asset
 },
 
 

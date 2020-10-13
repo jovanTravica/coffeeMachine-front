@@ -1,12 +1,22 @@
 <template>
   <div>
+    <div  id="bg" v-bind:style="{ backgroundImage: 'url(' + require('../assets/kafa.jpg') + ')' }">
       <Navbar/>
 
-
+<v-text-field
+        v-model="search"
+        append-icon="mdi-magnify"
+        label="Search"
+        single-line
+        hide-details
+        class="col-sm-6 col-md-3"
+      ></v-text-field>
+      <br>
 
       <v-data-table :items="locations"
                     :headers="headers"
-    class="elevation-1"
+                    :search="search"
+    class="transparent"
   >
                     
         <template slot="item" slot-scope="row">
@@ -111,6 +121,7 @@
 <router-link to="/locationscreate" class="btn btn-dark" tag="button"> Create new </router-link>
       </div>
   </div>
+  </div>
 </template>
 
 
@@ -144,7 +155,8 @@ data(){
           {text: 'Actions', value:'buttons'}
     
         ],
-    locations : []
+    locations : [],
+    search:''
     
   }
 },
@@ -187,7 +199,7 @@ Edit(location:{} ){
  EditLocation(code:string, name:string, adress:string, descr:string, dateFrom:Date, dateTo:Date) {
   
     axios
-      .post(`${config.serverURL}/api/v1/locations`, {
+      .put(`${config.serverURL}/api/v1/locations`, {
         code: code,
         name: name,
         descr: descr,
@@ -221,4 +233,14 @@ Edit(location:{} ){
 #inner {
   margin: 0 auto;
 }
+
+
+  div#bg {
+  -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 100vh;
+  }
 </style>

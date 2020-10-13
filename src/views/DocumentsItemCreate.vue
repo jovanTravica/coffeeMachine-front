@@ -1,5 +1,6 @@
 <template>
 <div>
+  <div  id="bg" v-bind:style="{ backgroundImage: 'url(' + require('../assets/kafa.jpg') + ')' }">
 <Navbar/> 
 <div id= "inner" class="col-sm-6 col-md-3">
   <form  @submit.prevent="Create" method="POST">
@@ -11,7 +12,8 @@
             outlined
             dense
             id="code"
-             v-model="code"
+            @input="code = $event"
+              required
           > </v-text-field>
         </v-col>
 
@@ -22,6 +24,7 @@
             dense
             id="name"
            v-model="name"
+            required
           ></v-text-field>
         </v-col>
 
@@ -38,32 +41,38 @@
 
   <v-col id="inner" cols="12" sm="6" md="8">
           <v-text-field 
+          v-bind:pattern="regex.source"
             label="Quantity"
             outlined
             dense
            id="quantity"
          v-model="quantity"
+          required
      ></v-text-field>
         </v-col>
 
 
   <v-col id="inner" cols="12" sm="6" md="8">
           <v-text-field 
+          v-bind:pattern="regex.source"
             label="Amount"
             outlined
             dense
            id="amount"
          v-model="amount"
+          required
      ></v-text-field>
         </v-col>
 
 <v-col id="inner" cols="12" sm="6" md="8">
           <v-text-field 
+          v-bind:pattern="regex.source"
             label="Gross Amount"
             outlined
             dense
            id="grossAmount"
          v-model="grossAmount"
+         required
      ></v-text-field>
         </v-col>
         
@@ -81,41 +90,11 @@
         label="Document"
         v-model="documentObject"
       ></v-select>
+       <span v-show="showAsset" style="color:red"> Invalid Document </span>
     </v-col>
   </v-row>
 
   
-  <v-row align="center">
-    <v-col  id="inner" cols="12" sm="6" md="8" >
-      <v-select
-      v-on:click.once="documentItemType()"
-      :items="documentItemTypeArray"
-      item-text="name"
-      item-value= "code"
-      return-object
-        :menu-props="{ top: true, offsetY: true }"
-        label="Document item type"
-        v-model="documentItemTypeObject"
-      ></v-select>
-    </v-col>
-  </v-row>
-
-
-  
-  <v-row align="center">
-    <v-col  id="inner" cols="12" sm="6" md="8" >
-      <v-select
-      v-on:click.once="product()"
-      :items="productArray"
-      item-text="name"
-      item-value= "code"
-      return-object
-        :menu-props="{ top: true, offsetY: true }"
-        label="Product"
-        v-model="productObject"
-      ></v-select>
-    </v-col>
-  </v-row>
 
   <v-row align="center">
     <v-col  id="inner" cols="12" sm="6" md="8" >
@@ -129,34 +108,23 @@
         label="Measurement"
         v-model="measurementObject"
       ></v-select>
+       <span v-show="showAsset" style="color:red"> Invalid Measurement </span>
     </v-col>
   </v-row>
 
-  <v-row align="center">
-    <v-col  id="inner" cols="12" sm="6" md="8" >
-      <v-select
-      v-on:click.once="asset()"
-      :items="assetArray"
-      item-text="name"
-      item-value= "code"
-      return-object
-        :menu-props="{ top: true, offsetY: true }"
-        label="Asset"
-        v-model="assetObject"
-      ></v-select>
-    </v-col>
-  </v-row>
 
  <button class="btn btn-lg btn-primary btn-block" type="submit">
               Save 
             </button> 
-           
+           <button class="btn btn-lg btn-secondary btn-block" v-on:click="back()">
+              Cancel
+              </button>  
             
 </div>
   </form>
 </div>
 </div>
-
+</div>
 </template>
 
 <script lang="ts">
@@ -170,7 +138,8 @@ import DocumentsCreate from './DocumentsCreate.vue';
 @Component({
   components: {
     Navbar
-  }
+  },
+ 
 })
 export default class DocumentsItemCreate extends Vue {
   
@@ -182,15 +151,17 @@ export default class DocumentsItemCreate extends Vue {
  private amount = 0
  private grossAmount = 0
  
+  regex = /^[0-9]+$/
+
+private showAsset = false
+private showDocument = false
+private showMeasurement = false
 
   private documentArray = []
-private documentItemTypeArray = []
-private productArray = []
+
   private measurementArray = [] 
     private assetArray = [] 
    private documentObject ={}
-   private documentItemTypeObject = {}
-    private productObject = {}
     private measurementObject = {}
     private assetObject = {}
 
@@ -198,8 +169,16 @@ private productArray = []
 
   Create() {
 
+ if (Object.keys(this.documentObject).length === 0)
+this.showDocument = true;
+
+else if (Object.keys(this.measurementObject).length === 0)
+this.showMeasurement = true;
+
+else 
+
     axios
-      .post(`${config.serverURL}/api/v1/document`, {
+      .post(`${config.serverURL}/api/v1/documentitem`, {
         code: this.code,
         name: this.name,
         descr: this.descr,
@@ -207,15 +186,14 @@ private productArray = []
         amount: this.amount,
         grossAmount: this.grossAmount,
         document: this.documentObject,
-        documentItemType: this.documentItemTypeObject,
-        product: this.productObject,
         measurement: this.measurementObject,
-        asset: this.assetObject
+        
 
         
       })
       .then(resp => {
-        router.push("/documents");
+         alert('Created');
+         this.$router.go(-1)
       })
       .catch(function(error) {
         alert(error.response.data.message);
@@ -235,20 +213,12 @@ this.documentArray= response.data;
 }) 
 
     
+}
+back() {
+  this.$router.go(-1);
 };
 
 
-documentItemType(){
-
-  axios.get(`${config.serverURL}/api/v1/documentitemtype`, {headers: {
-	  'Access-Control-Allow-Origin': '*',
-	},}).
-
-then(response => { 
-this.documentItemTypeArray= response.data;
-
-}) 
-};
 
 
 measurement(){
@@ -262,16 +232,6 @@ this.measurementArray= response.data;
 }) 
 };
 
-products(){
-  axios.get(`${config.serverURL}/api/v1/products`, {headers: {
-	  'Access-Control-Allow-Origin': '*',
-	},}).
-
-then(response => { 
-this.productArray= response.data;
-
-}) 
-};
 
 
 
@@ -285,6 +245,7 @@ this.assetArray= response.data;
 
 }) 
 };
+
 
 }
 
@@ -304,4 +265,14 @@ this.assetArray= response.data;
   #inner {
   margin: 0 auto;
 }
+
+
+  div#bg {
+  -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    background-repeat: no-repeat;
+    
+  }
 </style>

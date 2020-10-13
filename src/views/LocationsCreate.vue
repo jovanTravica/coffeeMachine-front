@@ -1,5 +1,6 @@
 <template>
 <div>
+  <div  id="bg" v-bind:style="{ backgroundImage: 'url(' + require('../assets/kafa.jpg') + ')' }">
 <Navbar/> 
 <div id= "inner" class="col-sm-6 col-md-3">
   <form  @submit.prevent="Create" method="POST">
@@ -11,7 +12,8 @@
             outlined
             dense
             id="code"
-             v-model="code"
+             @input="code = $event"
+              required
           > </v-text-field>
         </v-col>
 
@@ -22,6 +24,7 @@
             dense
             id="name"
            v-model="name"
+            required
           ></v-text-field>
         </v-col>
 
@@ -44,6 +47,7 @@
             dense
           id="adress"
           v-model="adress"
+           required
           ></v-text-field>
         </v-col>
         
@@ -107,19 +111,22 @@
         label="Status"
         v-model.lazy="selectedItem"
       ></v-select>
+      <span v-show="showItem" style="color:red"> Invalid Status </span>
     </v-col>
   </v-row>
 
  <button class="btn btn-lg btn-primary btn-block" type="submit">
               Save 
             </button> 
-           
+           <button class="btn btn-lg btn-secondary btn-block" v-on:click="back()">
+              Cancel
+              </button>  
             
 </div>
   </form>
 </div>
 </div>
-
+</div>
 </template>
 
 <script lang="ts">
@@ -146,10 +153,15 @@ export default class LocationsCreate extends Vue {
    private dateTo = new Date().toISOString().substr(0, 10)
   private items = ['active', 'not active']
   private selectedItem = ""
+  private showItem = false
 
   Create() {
-if(this.dateFrom > this.dateTo)
-alert("'Date from' has to be lower  than 'date to'")
+if(this.dateFrom >= this.dateTo)
+alert("'Date from' has to be lower than 'date to'")
+
+else if (this.selectedItem === "")
+this.showItem = true;
+
 else
 {
     axios
@@ -163,6 +175,7 @@ else
         active: this.options()
       })
       .then(resp => {
+         alert('Created');
         router.push("/locations");
       })
       .catch(function(error) {
@@ -175,8 +188,12 @@ else
     else
     return false
 }
+back() {
+  this.$router.go(-1);
+}
   
   }
+  
 
   </script>
 
@@ -191,4 +208,14 @@ else
   #inner {
   margin: 0 auto;
 }
+
+
+  div#bg {
+  -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    background-repeat: no-repeat;
+    
+  }
 </style>

@@ -1,5 +1,6 @@
 <template>
 <div>
+  <div  id="bg" v-bind:style="{ backgroundImage: 'url(' + require('../assets/kafa.jpg') + ')' }">
 <Navbar/> <br>
 <div id= "inner" class="col-sm-6 col-md-3">
   <form  @submit.prevent="Edit" method="POST">
@@ -12,6 +13,7 @@
             dense
             id="code"
              v-model="code"
+             readonly
           > </v-text-field>
         </v-col>
 
@@ -22,6 +24,7 @@
             dense
             id="name"
            v-model="name"
+           required
           ></v-text-field>
         </v-col>
 
@@ -61,14 +64,16 @@
  <button class="btn btn-lg btn-primary btn-block" type="submit">
               Save 
             </button> 
-           
+<button class="btn btn-lg btn-secondary btn-block" v-on:click="back()">
+              Cancel
+              </button>  
             
 </div>
   </form>
    
 </div>
 </div>
-
+</div>
 </template>
 
 <script lang="ts">
@@ -94,13 +99,14 @@ export default class ModelsEdit extends Vue {
   Edit() {
 
     axios
-      .post(`${config.serverURL}/api/v1/models`, {
+      .put(`${config.serverURL}/api/v1/models`, {
         code: this.code,
         name: this.name,
         year: this.year,
         descr: this.descr
       })
       .then(resp => {
+        alert("Edited");
         router.push("/models");
       })
       .catch(function(error) {
@@ -118,6 +124,10 @@ export default class ModelsEdit extends Vue {
   this.name = this.$store.getters.model.name
   this.year = this.$store.getters.model.year
   this.descr = this.$store.getters.model.descr
+}
+
+back() {
+  this.$router.go(-1);
 }
 }
 
@@ -139,4 +149,15 @@ export default class ModelsEdit extends Vue {
   #inner {
   margin: 0 auto;
 }
+
+
+  div#bg {
+  -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    background-repeat: no-repeat;
+    height: 100vh;
+  
+  }
 </style>

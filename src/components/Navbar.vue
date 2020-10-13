@@ -1,6 +1,6 @@
 <template>
   <nav>
-    <v-toolbar flat >
+    <v-toolbar flat color="transparent" >
       <v-icon
         @click="drawer = !drawer"
         class="grey--text"
@@ -16,7 +16,7 @@
     
     </v-toolbar>
 
-    <v-navigation-drawer app v-model="drawer" class="secondary" width="250" >
+    <v-navigation-drawer  app v-model="drawer" class="secondary" width="250" >
       <v-list>
         <v-list-group no-action  >
         <template v-slot:activator>
@@ -61,8 +61,9 @@ export default {
       drawer: false,
        links: [
         { icon: 'dashboard', text: 'Models', route: '/models' },
-        { icon: 'folder', text: 'Locations', route: '/locations' },
-      //   { icon: 'folder', text: 'Documents', route: '/documents' },
+        { icon: 'mdi-earth', text: 'Locations', route: '/locations' },
+        { icon: 'mdi-fridge-top', text: 'Assets', route: '/assets' },
+        { icon: 'mdi-chart-line', text: 'Diagram', route: '/dijagram' },
         
       ],
       dt: []
