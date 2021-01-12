@@ -200,7 +200,7 @@ this.modelArray= response.data;
     -o-background-size: cover;
     background-size: cover;
     background-repeat: no-repeat;
-    height: 100vh;
+    
 
   }
 </style>

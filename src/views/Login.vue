@@ -1,16 +1,12 @@
 <template>
+ <div  id="bg" v-bind:style="{ backgroundImage: 'url(' + require('../assets/login.jpg') + ')' }">
   <div id="app" class="container">
+    
       <div id="inner"  class="col-sm-6 col-md-3 col-md-offset-4">
-    <v-img
-      width="250"
-      height="250"
-      class="img-fluid"
-      alt="Responsive image"
-      src="@/assets/logo.png"
-    />
+   
       </div>
-    <div class="">
-      <div id="inner" class="col-sm-6 col-md-4 col-md-offset-4">
+    <div class="transparent">
+      <div id="inner" class="col-sm-2 col-md-4 col-md-offset-2">
         <div class="account-wall">
           <form class="form-signin" @submit.prevent="doRegister" method="POST">
             <input
@@ -39,6 +35,7 @@
       </div>
     </div>
   </div>
+  </div>
 </template>
 
 <script lang="ts">
@@ -62,8 +59,9 @@ export default class Login extends Vue {
         password: this.password
       })
       .then(resp => {
+        sessionStorage.setItem('logged', 'ad')
         router.push("/home");
-        this.$store.commit("login", resp.status) 
+       
       })
       .catch(function(error) {
         alert(error.response.data.message);
@@ -73,6 +71,7 @@ export default class Login extends Vue {
 </script>
 
 <style scoped>
+
 .form-signin {
   max-width: 330px;
   padding: 15px;
@@ -111,7 +110,7 @@ export default class Login extends Vue {
 .account-wall {
   margin-top: 20px;
   padding: 40px 0px 20px 0px;
-  background-color: #f7f7f7;
+  background-color:transparent;
   -moz-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
   -webkit-box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
   box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.3);
@@ -149,5 +148,18 @@ export default class Login extends Vue {
 }
 #inner {
   margin: 0 auto;
+  top: 70%;
 }
+
+
+  div#bg {
+  -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+   background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    height: 100vh;
+  }
+
 </style>

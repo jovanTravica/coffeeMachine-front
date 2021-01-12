@@ -71,7 +71,7 @@ export default {
   },
   methods: {
     Logout(){
-      this.$store.commit('login', 0) ;
+     sessionStorage.setItem('logged', '') ;
     },
     
   Documents(name:string)

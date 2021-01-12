@@ -50,33 +50,47 @@
             </v-edit-dialog></td>
 
 
-             <td class="text-xs-right">
-        <v-edit-dialog
+            <td  class="text-xs-right" >  <v-edit-dialog
           :return-value.sync="row.item.model.name"
-          large
+           large
       persistent>
-          {{ row.item.model.name }}
+          {{ row.item.model.name}}
           <template v-slot:input>
-           <v-text-field
-          v-model="row.item.model.name" ></v-text-field>
+         <v-select
+        :items="models"
+        item-text="name"
+        item-value="value"
+        return-object
+        v-model="modelObject"
+        :menu-props="{ top: true, offsetY: true }"
+        label="Status"
+        @input="row.item.model.name = modelObject.name; row.item.model = modelObject"
+      ></v-select>
           </template>
             </v-edit-dialog>
-             </td>
+            </td>
 
-              <td class="text-xs-right">
-        <v-edit-dialog
+          <td  class="text-xs-right" >  <v-edit-dialog
           :return-value.sync="row.item.location.name"
-          large
+           large
       persistent>
-          {{ row.item.location.name }}
+          {{ row.item.location.name}}
           <template v-slot:input>
-           <v-text-field
-          v-model="row.item.location.name" ></v-text-field>
+         <v-select
+        :items="locations"
+        item-text="name"
+        item-value="value"
+        return-object
+        v-model="locationObject"
+        :menu-props="{ top: true, offsetY: true }"
+        label="Status"
+        @input="row.item.location.name = locationObject.name; row.item.location = locationObject"
+      ></v-select>
           </template>
             </v-edit-dialog>
-             </td>
+            </td>
             
-      <td class="text-xs-right"> <router-link to="/assetsedit" class="btn btn-primary" tag="button"  v-on:click.native="Edit(row.item)" value="buttons"> Edit </router-link> <button type="button" class="btn btn-danger" v-on:click="DeleteAsset(row.item.id)">Delete</button> <button type="button" class="btn btn-danger" v-on:click="EditAsset(row.item.code, row.item.name,row.item.descr)">Save</button> </td>
+      <td class="text-xs-right"> <router-link to="/assetsedit" class="btn btn-primary" tag="button"  v-on:click.native="Edit(row.item)" value="buttons"> Edit </router-link> <button type="button" class="btn btn-danger" v-on:click="DeleteAsset(row.item.id)">Delete</button> <button type="button" class="btn btn-danger" v-on:click="EditAsset(row.item.code, row.item.name,row.item.descr, row.item.model, row.item.location)">Save</button> </td>
 </tr>
     </template>
 
@@ -119,15 +133,19 @@ data(){
           },
           { text: 'Name', value: 'name' },
           { text: 'Description', value: 'descr' },
-           { text: 'Model', value: 'model' },
-            { text: 'Location', value: 'location' },
+           { text: 'Model', value: 'model.name' },
+            { text: 'Location', value: 'location.name' },
           {text: 'Actions', value:'buttons'}
     
         ],
     assets : [],
+    models:[],
+    locations:[],
     stanje : [],
     show: false,
-    search: ''
+    search: '',
+    locationObject: {},
+    modelObject:{}
     
   }
 },
@@ -139,6 +157,21 @@ axios.get(`${config.serverURL}/api/v1/assets`, {headers: {
 
 then(response => { 
 this.assets = response.data; }) 
+
+axios.get(`${config.serverURL}/api/v1/models`, {headers: {
+	  'Access-Control-Allow-Origin': '*',
+	},}).
+
+then(response => { 
+this.models = response.data; }) 
+
+
+axios.get(`${config.serverURL}/api/v1/locations`, {headers: {
+	  'Access-Control-Allow-Origin': '*',
+	},}).
+
+then(response => { 
+this.locations = response.data; }) 
 
 
 },
@@ -154,7 +187,7 @@ if(confirm("Do you really want to delete?")){
                    this.$router.go(0);
                 })
                 .catch(error => {
-                    console.log(error);
+                    alert('There are still some documents for this asset');
                 })
    }
 }
@@ -166,13 +199,15 @@ Edit(asset:{} ){
 
 },
 
-EditModel(code:number, name:string, descr:string){
+EditAsset(code:string, name:string, descr:string, model:{}, location:{}){
 
   axios
-      .post(`${config.serverURL}/api/v1/models`, {
+      .put(`${config.serverURL}/api/v1/assets`, {
         code: code,
         name: name,
-        descr: descr
+        descr: descr,
+        model: model,
+        location: location
       })
       .then(resp => {
         alert("Data saved");

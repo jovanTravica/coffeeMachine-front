@@ -151,7 +151,7 @@ data(){
           { text: 'Description', value: 'descr' },
           { text: 'Date from', value: 'dateFrom' },
           { text: 'Date to', value: 'dateTo' },
-          { text: 'Status', value: 'status', sortable:false },
+          { text: 'Status', value: 'active' },
           {text: 'Actions', value:'buttons'}
     
         ],
@@ -175,7 +175,7 @@ this.locations = response.data; })
 methods: {
 DeleteLocation(id:number){
 
-if(confirm("Do you really want to delete?")){
+if(confirm("Do you really want to delete this location?")){
 
                 axios.delete(`${config.serverURL}/api/v1/locations/`+id)
                 .then(resp => {
@@ -183,7 +183,7 @@ if(confirm("Do you really want to delete?")){
                    this.$router.go(0);
                 })
                 .catch(error => {
-                    console.log(error);
+                    alert('There are still assets on this location');
                 })
    }
 }

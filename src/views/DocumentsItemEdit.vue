@@ -12,8 +12,7 @@
             outlined
             dense
             id="code"
-            @input="code = $event"
-              required
+             v-model="code"
           > </v-text-field>
         </v-col>
 
@@ -24,7 +23,6 @@
             dense
             id="name"
            v-model="name"
-            required
           ></v-text-field>
         </v-col>
 
@@ -41,38 +39,32 @@
 
   <v-col id="inner" cols="12" sm="6" md="8">
           <v-text-field 
-          v-bind:pattern="regex.source"
             label="Quantity"
             outlined
             dense
            id="quantity"
          v-model="quantity"
-          required
      ></v-text-field>
         </v-col>
 
 
   <v-col id="inner" cols="12" sm="6" md="8">
           <v-text-field 
-          v-bind:pattern="regex.source"
             label="Amount"
             outlined
             dense
            id="amount"
          v-model="amount"
-          required
      ></v-text-field>
         </v-col>
 
 <v-col id="inner" cols="12" sm="6" md="8">
           <v-text-field 
-          v-bind:pattern="regex.source"
             label="Gross Amount"
             outlined
             dense
            id="grossAmount"
          v-model="grossAmount"
-         required
      ></v-text-field>
         </v-col>
         
@@ -81,7 +73,7 @@
   <v-row align="center">
     <v-col  id="inner" cols="12" sm="6" md="8" >
       <v-select
-      v-on:click.once="document()"
+  
       :items="documentArray"
       item-text="name"
       item-value= "code"
@@ -90,16 +82,16 @@
         label="Document"
         v-model="documentObject"
       ></v-select>
-       <span v-show="showAsset" style="color:red"> Invalid Document </span>
     </v-col>
   </v-row>
+
 
   
 
   <v-row align="center">
     <v-col  id="inner" cols="12" sm="6" md="8" >
       <v-select
-      v-on:click.once="measurement()"
+ 
       :items="measurementArray"
       item-text="name"
       item-value= "code"
@@ -108,17 +100,15 @@
         label="Measurement"
         v-model="measurementObject"
       ></v-select>
-       <span v-show="showAsset" style="color:red"> Invalid Measurement </span>
     </v-col>
   </v-row>
 
+  
 
  <button class="btn btn-lg btn-primary btn-block" type="submit">
               Save 
             </button> 
-           <button class="btn btn-lg btn-secondary btn-block" v-on:click="back()">
-              Cancel
-              </button>  
+           
             
 </div>
   </form>
@@ -138,8 +128,7 @@ import DocumentsCreate from './DocumentsCreate.vue';
 @Component({
   components: {
     Navbar
-  },
- 
+  }
 })
 export default class DocumentsItemCreate extends Vue {
   
@@ -151,34 +140,62 @@ export default class DocumentsItemCreate extends Vue {
  private amount = 0
  private grossAmount = 0
  
-  regex = /^[0-9]+$/
-
-private showAsset = false
-private showDocument = false
-private showMeasurement = false
 
   private documentArray = []
-
+private documentItemTypeArray = []
+private productArray = []
   private measurementArray = [] 
     private assetArray = [] 
    private documentObject ={}
+   private documentItemTypeObject = {}
+    private productObject = {}
     private measurementObject = {}
     private assetObject = {}
 
-    
+created() {
+
+  this.code = this.$store.getters.documentItem.code
+  this.name = this.$store.getters.documentItem.name
+  this.descr = this.$store.getters.documentItem.descr
+  this.quantity = this.$store.getters.documentItem.quantity
+  this.amount = this.$store.getters.documentItem.amount
+  this.grossAmount = this.$store.getters.documentItem.grossAmount
+  this.documentObject = this.$store.getters.documentItem.document
+  this.measurementObject = this.$store.getters.documentItem.measurement
+
+
+  axios.get(`${config.serverURL}/api/v1/document`, {headers: {
+	  'Access-Control-Allow-Origin': '*',
+	},}).
+
+then(response => { 
+this.documentArray= response.data;
+
+}) 
+
+
+
+ axios.get(`${config.serverURL}/api/v1/measurements`, {headers: {
+	  'Access-Control-Allow-Origin': '*',
+	},}).
+
+then(response => { 
+this.measurementArray= response.data;
+
+}) 
+
+
+
+
+
+ 
+
+}
 
   Create() {
 
- if (Object.keys(this.documentObject).length === 0)
-this.showDocument = true;
-
-else if (Object.keys(this.measurementObject).length === 0)
-this.showMeasurement = true;
-
-else 
-
     axios
-      .post(`${config.serverURL}/api/v1/documentitem`, {
+      .put(`${config.serverURL}/api/v1/documentitem`, {
         code: this.code,
         name: this.name,
         descr: this.descr,
@@ -192,64 +209,27 @@ else
         
       })
       .then(resp => {
-         alert('Created');
-         this.$router.go(-1)
+        this.$router.go(-1);
       })
       .catch(function(error) {
         alert(error.response.data.message);
       });
+
+      this.$store.getters.documentItem.code
+   this.$store.getters.documentItem.name = this.name
+ this.$store.getters.documentItem.descr = this.descr
+  this.$store.getters.documentItem.quantity =  this.quantity 
+ this.$store.getters.documentItem.amount =  this.amount 
+   this.$store.getters.documentItem.grossAmount = this.grossAmount 
+   this.$store.getters.documentItem.document = this.documentObject 
+  this.$store.getters.documentItem.measurement =  this.measurementObject 
+   
   };
 
 
-  document(){
-
-axios.get(`${config.serverURL}/api/v1/document/documenttype/prijemnica` , {headers: {
-	  'Access-Control-Allow-Origin': '*',
-	},}).
-
-then(response => { 
-this.documentArray= response.data;
-
-}) 
-
-    
-}
-back() {
-  this.$router.go(-1);
-};
-
-
-
-
-measurement(){
-  axios.get(`${config.serverURL}/api/v1/measurements`, {headers: {
-	  'Access-Control-Allow-Origin': '*',
-	},}).
-
-then(response => { 
-this.measurementArray= response.data;
-
-}) 
-};
-
-
-
-
-asset(){
-  axios.get(`${config.serverURL}/api/v1/assets`, {headers: {
-	  'Access-Control-Allow-Origin': '*',
-	},}).
-
-then(response => { 
-this.assetArray= response.data;
-
-}) 
-};
-
-
+ 
 }
 
-  
 
 
   </script>
@@ -266,13 +246,12 @@ this.assetArray= response.data;
   margin: 0 auto;
 }
 
-
-  div#bg {
+div#bg {
   -webkit-background-size: cover;
     -moz-background-size: cover;
     -o-background-size: cover;
     background-size: cover;
     background-repeat: no-repeat;
-    
+  
   }
 </style>

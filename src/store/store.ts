@@ -9,7 +9,8 @@ state: {
   location: {},
   document: {},
   asset:{},
-  status: 0,
+  documentItem:{},
+  isAuthenticated: false,
   documentType: ''
 
 },
@@ -25,12 +26,17 @@ mutations: {
       state.document = document;
    },
 
+   editDocumentItem (state, documentItem ){
+      state.documentItem = documentItem;
+   },
+
    editAsset (state, asset ){
       state.asset = asset;
    },
 
-   login(state, status){
-      state.status = status;
+   login(state, isAuthenticated){
+   
+      state.isAuthenticated = isAuthenticated;
    },
 
    docType(state, documentType) {
@@ -43,7 +49,8 @@ getters: {
     model: state => state.model,
     location: state => state.location,
     document: state => state.document,
-    status: state => state.status,
+    documentItem: state=> state.documentItem,
+    isAuthenticated: state => state.isAuthenticated,
     documentType: state => state.documentType,
     asset: state => state.asset
 },

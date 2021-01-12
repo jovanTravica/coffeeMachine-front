@@ -128,7 +128,7 @@ this.models = response.data; })
 methods: {
 DeleteModel(id:number){
 
-if(confirm("Do you really want to delete?")){
+if(confirm("Do you really want to delete this model?")){
 
                 axios.delete(`${config.serverURL}/api/v1/models/`+id)
                 .then(resp => {
@@ -136,7 +136,7 @@ if(confirm("Do you really want to delete?")){
                    this.$router.go(0);
                 })
                 .catch(error => {
-                    console.log(error);
+                   alert('Assest with this model still exists');
                 })
    }
 }

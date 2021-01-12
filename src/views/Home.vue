@@ -1,6 +1,6 @@
 <template>
   <v-app class="grey lighten-4">
-      <div  id="bg" v-bind:style="{ backgroundImage: 'url(' + require('../assets/kafa.jpg') + ')' }">
+      <div  id="bg" v-bind:style="{ backgroundImage: 'url(' + require('../assets/pocetna.jpg') + ')' }">
     <Navbar />
 
 

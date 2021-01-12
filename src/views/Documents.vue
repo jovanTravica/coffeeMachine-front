@@ -70,14 +70,42 @@
   
             
      
-<td class="text-xs-right" >  <v-edit-dialog
+<td  class="text-xs-right" >  <v-edit-dialog
           :return-value.sync="row.item.documentType.name"
            large
       persistent>
           {{ row.item.documentType.name}}
           <template v-slot:input>
-           <v-text-field
-          v-model="row.item.documentType.name" ></v-text-field>
+         <v-select
+        :items="docTypeItems"
+        item-text="name"
+        item-value="value"
+        return-object
+        v-model="docType"
+        :menu-props="{ top: true, offsetY: true }"
+        label="Status"
+        @input="row.item.documentType.name = docType.name; row.item.documentType = docType"
+      ></v-select>
+          </template>
+            </v-edit-dialog>
+            </td>
+
+<td  class="text-xs-right" >  <v-edit-dialog
+          :return-value.sync="row.item.asset.name"
+           large
+      persistent>
+          {{ row.item.asset.name}}
+          <template v-slot:input>
+         <v-select
+        :items="assetItems"
+        item-text="name"
+        item-value="value"
+        return-object
+        v-model="assetObject"
+        :menu-props="{ top: true, offsetY: true }"
+        label="Asset"
+        @input="row.item.asset.name = assetObject.name; row.item.asset = assetObject"
+      ></v-select>
           </template>
             </v-edit-dialog>
             </td>
@@ -85,7 +113,7 @@
           
 
 
-      <td class="text-xs-right"> <router-link to="/documentsedit" class="btn btn-primary" tag="button"  v-on:click.native="Edit(row.item)" value="buttons"> Edit </router-link> <button type="button" class="btn btn-danger" v-on:click="DeleteDocument(row.item.id)">Delete</button>   <button type="button" class="btn btn-danger" v-on:click="EditDocument(row.item.code, row.item.name,row.item.descr,row.item.dateDoc,row.item.dateFrom,row.item.dateTo)">Save</button></td>
+      <td class="text-xs-right"> <router-link to="/documentsedit" class="btn btn-primary" tag="button"  v-on:click.native="Edit(row.item)" value="buttons"> Edit </router-link> <button type="button" class="btn btn-danger" v-on:click="DeleteDocument(row.item.id)">Delete</button>   <button type="button" class="btn btn-danger" v-on:click="EditDocument(row.item.code, row.item.name,row.item.descr,row.item.dateDoc, row.item.documentType, row.item.asset)">Save</button></td>
 </tr>
     </template>
 
@@ -107,103 +135,41 @@
       <td class="text-xs-right">{{ row.item.code }}</td>
 
       <td class="text-xs-right">
-        <v-edit-dialog
-          :return-value.sync="row.item.name"
-          large
-      persistent>
-          {{ row.item.name }}
-          <template v-slot:input>
-           <v-text-field
-          v-model="row.item.name" ></v-text-field>
-          </template>
-            </v-edit-dialog>
+         {{ row.item.name }}
              </td>
 
 
       <td class="text-xs-right">
-        <v-edit-dialog
-          :return-value.sync="row.item.descr"
-          large
-      persistent>
-          {{ row.item.descr }}
-          <template v-slot:input>
-           <v-text-field
-          v-model="row.item.descr" ></v-text-field>
-          </template>
-            </v-edit-dialog></td>
+       {{ row.item.descr }}</td>
 
 
             
       <td class="text-xs-right">
-        <v-edit-dialog
-          :return-value.sync="row.item.quantity"
-          large
-      persistent>
-          {{ row.item.quantity }}
-          <template v-slot:input>
-           <v-text-field
-          v-model="row.item.quantity" ></v-text-field>
-          </template>
-            </v-edit-dialog>
+      {{ row.item.quantity }}
              </td>
 
 
              <td class="text-xs-right">
-        <v-edit-dialog
-          :return-value.sync="row.item.amount"
-          large
-      persistent>
-          {{ row.item.amount }}
-          <template v-slot:input>
-           <v-text-field
-          v-model="row.item.amount" ></v-text-field>
-          </template>
-            </v-edit-dialog>
+        {{ row.item.amount }}
              </td>
 
 
 
                <td class="text-xs-right">
-        <v-edit-dialog
-          :return-value.sync="row.item.grossAmount"
-          large
-      persistent>
-          {{ row.item.grossAmount }}
-          <template v-slot:input>
-           <v-text-field
-          v-model="row.item.grossAmount" ></v-text-field>
-          </template>
-            </v-edit-dialog>
+      {{ row.item.grossAmount }}
              </td>
+
         <td class="text-xs-right">
-        <v-edit-dialog
-          :return-value.sync="row.item.measurement.name"
-          large
-      persistent>
-          {{ row.item.measurement.name }}
-          <template v-slot:input>
-           <v-text-field
-          v-model="row.item.measurement.name" ></v-text-field>
-          </template>
-            </v-edit-dialog>
+        {{ row.item.measurement.name }}
              </td>
 
 
 
                 <td class="text-xs-right">
-        <v-edit-dialog
-          :return-value.sync="row.item.document.name"
-          large
-      persistent>
-          {{ row.item.document.name }}
-          <template v-slot:input>
-           <v-text-field
-          v-model="row.item.document.name" ></v-text-field>
-          </template>
-            </v-edit-dialog>
+        {{ row.item.document.name }}
              </td>
 
-          
+          <td class="text-xs-right"> <router-link to="/documentsitemedit" class="btn btn-primary" tag="button"  v-on:click.native="EditItem(row.item)" value="buttons"> Edit </router-link> <button type="button" class="btn btn-danger" v-on:click="DeleteDocumentItem(row.item.id)">Delete</button>   </td>
 
 
         
@@ -247,8 +213,9 @@ data(){
           },
           { text: 'Name', value: 'name' },
           { text: 'Description', value: 'descr' },
-          { text: 'Date', value: 'date' },
+          { text: 'Date', value: 'dateDoc' },
           {text: 'Document type', value:'documentType'},
+           {text: 'Asset', value:'asset.name'},
             {text: 'Actions', value:'buttons'}
     
         ],
@@ -266,7 +233,8 @@ data(){
           { text: 'Amount', value: 'amount' },
           { text: 'Gross amount', value: 'grossAmount' },
            {text: 'Measurement', value:'measurement'},
-          { text: 'Document', value: 'document'}
+          { text: 'Document', value: 'document'},
+           {text: 'Actions', value:'buttons'}
            
          
     
@@ -277,7 +245,14 @@ data(){
     filteredProducts : [],
     documentType: '',
     search: '',
-    show: false
+    show: false,
+    docTypeItems: [],
+    docTypeCode:'',
+    docType:{},
+    assetItems:[],
+    assetCode: '',
+    assetObject:{}
+  
     
   }
 },
@@ -285,18 +260,41 @@ data(){
 
 
 created(){
-  this.getDocuments()
+  this.getDocuments();
+  this.docTypeFunction();
+  this.assetsFunction();
+  
 },
 watch:{
   
 '$route.params.name': function (name) {
       this.getDocuments()
+      this.$router.go(0)
 
 }},
 
 
 methods: {
 
+docTypeFunction(){
+axios.get(`${config.serverURL}/api/v1/documenttype`, {headers: {
+	  'Access-Control-Allow-Origin': '*',
+	},}).
+
+then(response => { 
+this.docTypeItems = response.data;
+ })
+},
+
+assetsFunction(){
+axios.get(`${config.serverURL}/api/v1/assets`, {headers: {
+	  'Access-Control-Allow-Origin': '*',
+	},}).
+
+then(response => { 
+this.assetItems = response.data;
+ })
+},
   
 getDocuments(){
 this.documentType =this.$route.params.name
@@ -310,11 +308,27 @@ this.documents = response.data; }) },
 
 DeleteDocument(id:number){
 
-if(confirm("Do you really want to delete?")){
+if(confirm("Are you sure you want to delete document and all its items?")){
 
                 axios.delete(`${config.serverURL}/api/v1/document/`+id)
                 .then(resp => {
                    alert ('Document deleted');
+                   this.$router.go(0);
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+   }
+}
+,
+
+DeleteDocumentItem(id:number){
+
+if(confirm("Do you really want to delete this item?")){
+
+                axios.delete(`${config.serverURL}/api/v1/documentitem/`+id)
+                .then(resp => {
+                   alert ('Document item deleted');
                    this.$router.go(0);
                 })
                 .catch(error => {
@@ -331,21 +345,28 @@ Edit(document:{} ){
 
 },
 
- EditDocument(code:string, name:string, adress:string, descr:string,dateDoc:Date, dateFrom:Date, dateTo:Date) {
+EditItem(item:{}) {
+
+this.$store.commit('editDocumentItem', item)
+},
+
+ EditDocument(code:string, name:string, descr:string,dateDoc:Date, documentType:{}, asset:{}) {
+  
   
     axios
-      .post(`${config.serverURL}/api/v1/document`, {
+      .put(`${config.serverURL}/api/v1/document`, {
         code: code,
         name: name,
         descr: descr,
-        adress: adress,
-        dateFrom: dateFrom,
-        dateTo: dateTo,
+        dateDoc: dateDoc,
+        documentType: documentType,
+        asset: asset
         
      
       })
       .then(resp => {
-        this.$router.push("/document");
+        alert('Data saved')
+       this.$router.go(0);
       })
       .catch(function(error) {
         alert(error.response.data.message);
@@ -389,6 +410,6 @@ this.show = false
     -o-background-size: cover;
     background-size: cover;
     background-repeat: no-repeat;
-    height: 100vh;
+    height: 300vh;
   }
 </style>

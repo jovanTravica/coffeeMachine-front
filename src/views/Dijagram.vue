@@ -34,13 +34,13 @@ import router from "../router";
               }
             }],
             xAxes: [ {
-              type:"category",
+              
               gridLines: {
                 display: true
               },
               ticks: {
                 display:true,
-                maxTicksLimit: 2,
+                
                 
               }
             }]
@@ -64,7 +64,8 @@ import router from "../router";
             borderWidth: 1,
             pointBorderColor: '#249EBF',
             backgroundColor: 'transparent',
-            data: this.chartData
+            data: this.chartData,
+           
           }
         ]
       }, this.options)
